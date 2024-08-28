@@ -13,12 +13,20 @@ class Tester():
 
     def parse(self, raw_data, time_packet_sent):
         # system time, ttl, time
-        split_lines = raw_data.split("\n")
+        if platform.system().lower() == "windows":
+            split_lines = raw_data.split("\r\n")
+        else:
+            split_lines = raw_data.split("\n")
         del split_lines[0]
+        if platform.system().lower() == "windows":
+            del split_lines[0]
         clean_lines = []
         for line in split_lines:
             if not line == '':
                 clean_lines.append(line)
+            if "ping statistics" in line:
+                break
+                
             else:
                 break 
         

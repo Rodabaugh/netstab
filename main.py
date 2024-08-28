@@ -3,7 +3,7 @@ import datetime
 from ping import *
 
 tester = Tester()
-log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') + ".csv"
+log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
 
 log_file = open(log_name,"w")
 
