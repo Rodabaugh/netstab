@@ -35,7 +35,6 @@ class Tester():
                     clean_lines.append(line)
                 if "ping statistics" in line:
                     break
-                    
                 else:
                     break 
             

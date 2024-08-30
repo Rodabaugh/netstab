@@ -6,6 +6,6 @@ UI_X_PADDING = 5
 DEFAULT_HOST = "1.1.1.1"
 DEFAULT_NUM_PACKETS = "4"
 
-STATUS_PINGING_TEXT = "We be pinging!"
-STATUS_NOT_PINGING_TEXT = "We not be pinging..."
-STATUS_STOP_PINGING_TEXT = "We're be stopping!"
+STATUS_PINGING_TEXT = "We're pinging!"
+STATUS_NOT_PINGING_TEXT = "We're not pinging..."
+STATUS_STOP_PINGING_TEXT = "We're stopping!"
