@@ -11,7 +11,7 @@ class Tester():
         responce = subprocess.run(["ping", self.ping_count_flag, "1", host], stdout = subprocess.PIPE, check=False)
         return responce.stdout.decode("utf-8").lower(), responce.returncode, time_packet_sent
 
-    def parse(self, raw_data, returncode, time_packet_sent):
+    def parse(self, raw_data, returncode, time_packet_sent, host):
         # system time, ttl, time
         packets = list()
 
@@ -48,17 +48,18 @@ class Tester():
                     if "ttl" in section:
                         ttl = section.strip("ttl=")
                 if ttl == None:
-                    packets.append(packet(dropped = True))
+                    packets.append(packet(host, dropped = True))
                 else:
-                    packets.append(packet(latency, ttl, time_packet_sent))
+                    packets.append(packet(host, latency, ttl, time_packet_sent))
             return packets
 
 class packet():
-    def __init__(self, latency = None, ttl = None, time_packet_sent = None, dropped = False):
+    def __init__(self, host, latency = None, ttl = None, time_packet_sent = None, dropped = False):
+        self.host = host
         self.latency = latency
         self.ttl = ttl
         self.time_packet_sent = time_packet_sent
         self.dropped = dropped
 
     def __repr__(self):
-        return f"Latency={self.latency} TTL={self.ttl} Time Sent={self.time_packet_sent} Dropped={self.dropped}"
+        return f"Host={self.host} Latency={self.latency} TTL={self.ttl} Time Sent={self.time_packet_sent} Dropped={self.dropped}"

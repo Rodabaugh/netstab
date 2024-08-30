@@ -1,21 +1,17 @@
 import time
 import datetime
 from ping import *
+from ui import *
 
-tester = Tester()
-log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
+def main():
+    log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
+    log_file = open(log_name,"w")
+    log_file.write("Time Sent,Host,Latency,TTL,Dropped\n")
 
-log_file = open(log_name,"w")
+    tester = Tester()
+    main_window = App(800, 600, tester, log_file)        
 
-log_file.write("Time Sent,Latency,TTL,Dropped\n")
+    main_window.wait_for_close()
+    log_file.close()
 
-for x in range(3):
-    ping = tester.ping("1.1.1.1")
-    packets = tester.parse(ping[0], ping[1], ping[2])
-    for packet in packets:
-        print(packet)
-        local_time = datetime.datetime.fromtimestamp(packet.time_packet_sent).strftime('%Y-%m-%d %H:%M:%S')
-        log_file.writelines(f"{local_time},{packet.latency},{packet.ttl},{packet.dropped}\n")
-    time.sleep(1)
-
-log_file.close()
+main()
