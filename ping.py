@@ -16,7 +16,8 @@ class Tester():
         packets = list()
 
         if returncode == 1:
-            packets.append(packet(None, None, time_packet_sent, dropped=True))
+            packets.append(packet(host, None, None, time_packet_sent, dropped=True))
+            print("Dropped...")
             return packets
         else:
             if platform.system().lower() == "windows":

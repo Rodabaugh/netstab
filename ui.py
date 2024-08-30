@@ -16,7 +16,7 @@ class App(Tk):
         self.host_label = Label(self, text="Remote host:", font=(UI_FONT, UI_FONT_SIZE))
         self.host_label.grid(row=0, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
-        self.host_entry = Entry(self, width=20, font=(UI_FONT, UI_FONT_SIZE), )
+        self.host_entry = Entry(self, width=20, font=(UI_FONT, UI_FONT_SIZE))
         self.host_entry.insert(0, DEFAULT_HOST)
         self.host_entry.grid(row=0, column=1, padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
