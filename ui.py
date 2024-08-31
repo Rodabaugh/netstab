@@ -1,6 +1,8 @@
+from threading import Thread
 from tkinter import *
 from helper import *
 from constraints import *
+from time import sleep
 
 class App(Tk):
     def __init__(self, width, height, tester, log_file):
@@ -14,6 +16,8 @@ class App(Tk):
         self.running = False
 
         Ping_frame(self)
+        self.status_label = Label(self, text=STATUS_NOT_PINGING_TEXT, font=(UI_FONT, UI_FONT_SIZE))
+        self.status_label.pack(padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
         self.protocol("WM_DELETE_WINDOW", self.close)
 
@@ -24,7 +28,12 @@ class App(Tk):
     def wait_for_close(self):
         self.running = True
         while self.running == True:
+            if self.tester.ping_status == True:
+                self.status_label.config(text=STATUS_PINGING_TEXT)
+            else:
+                self.status_label.config(text=STATUS_NOT_PINGING_TEXT)
             self.redraw()
+            sleep(.1)
         print("window closed...")
 
     def close(self):
@@ -33,6 +42,7 @@ class App(Tk):
 class Ping_frame(Frame):
     def __init__(self, parent):
         super().__init__(parent)
+        self.pinging = False
         self.parent = parent
         self.pack(pady=UI_Y_PADDING)
 
@@ -63,32 +73,24 @@ class Ping_frame(Frame):
         self.stop_button = Button(self, text="Stop!", command=self.stop_button_command)
         self.stop_button.grid(row=4, column=1, padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
-        self.status_label = Label(self, text=STATUS_NOT_PINGING_TEXT, font=(UI_FONT, UI_FONT_SIZE))
-        self.status_label.grid(row=5, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
-
     def ping_button_command(self):
         hosts = self.get_hosts()
-        if hosts == None:
-            self.status_label.config(text=STATUS_NO_HOSTS)
+        if self.parent.tester.ping_status == True:
             return
-        self.status_label.config(text=STATUS_PINGING_TEXT)
 
-        # Preform the pinging
-        if int(self.num_packets_entry.get()) == 0:
-            self.infinite_ping = True
-            while self.infinite_ping == True:
-                self.parent.redraw()
-                ping_and_write_log(hosts, 1, self.parent.tester, self.parent.log_file)
-        else:
-            for i in range(int(self.num_packets_entry.get())):
-                self.parent.redraw()
-                ping_and_write_log(hosts, 1, self.parent.tester, self.parent.log_file)
-        self.status_label.config(text=STATUS_NOT_PINGING_TEXT)
+        if hosts == None:
+            self.parent.status_label.config(text=STATUS_NO_HOSTS)
+            return
+
+        num_packets = int(self.num_packets_entry.get())
+
+        self.parent.tester.ping_status = True
+        pinging_thread = Thread(target=self.parent.tester.start_pinging, args=(hosts, num_packets, self.parent.log_file), daemon=True)
+        pinging_thread.start()
+        self.parent.redraw()
 
     def stop_button_command(self):
-        self.infinite_ping = False
-        self.status_label.config(text=STATUS_STOP_PINGING_TEXT)
-        self.parent.redraw()
+        self.parent.tester.ping_status = False
 
     def get_hosts(self):
         hosts = list()

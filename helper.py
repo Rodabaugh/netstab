@@ -25,3 +25,4 @@ def ping_and_write_log(hosts, number, tester, logfile):
             for packet in f.result():
                 packets.append(packet)
     write_data(packets, logfile)
+    return packets

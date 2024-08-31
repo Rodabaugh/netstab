@@ -1,15 +1,29 @@
 import platform
 import subprocess
 import time
+from helper import *
 
 class Tester():
     def __init__(self):
         self.ping_count_flag = "-n" if platform.system().lower()=='windows' else "-c"
+        self.ping_status = False
 
     def ping(self, host, packets = 1):
         time_packet_sent = time.time()
         responce = subprocess.run(["ping", self.ping_count_flag, "1", host], stdout = subprocess.PIPE, check=False)
         return responce.stdout.decode("utf-8").lower(), responce.returncode, time_packet_sent
+    
+    def start_pinging(self, hosts, num_packets, log_file):
+        self.ping_status = True
+        if num_packets == 0:
+            while self.ping_status == True:
+                ping_and_write_log(hosts, 1, self, log_file)
+        else:
+            for i in range(num_packets):
+                if self.ping_status == False:
+                    return
+                ping_and_write_log(hosts, 1, self, log_file)
+            self.ping_status = False
 
     def parse(self, raw_data, returncode, time_packet_sent, host):
         # system time, ttl, time
