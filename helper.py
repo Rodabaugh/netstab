@@ -1,6 +1,6 @@
 import time
 import datetime
-from threading import Thread
+import concurrent.futures
 
 def run_ping(host, number, tester):
     packets = list()
@@ -18,26 +18,10 @@ def write_data(packets, log_file):
 def ping_and_write_log(hosts, number, tester, logfile):
     packets = list()
     threads = list()
-    for host in hosts:
-        threads.append(ThreadWithReturnValue(target=run_ping, args=(host, number, tester)))
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        result = thread.join()
-        for packet in result:
-            packets.append(packet)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = [executor.submit(run_ping, host, number, tester) for host in hosts]
+
+        for f in concurrent.futures.as_completed(results):
+            for packet in f.result():
+                packets.append(packet)
     write_data(packets, logfile)
-
-class ThreadWithReturnValue(Thread):
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}, Verbose=None):
-        Thread.__init__(self, group, target, name, args, kwargs)
-        self._return = None
-
-    def run(self):
-        if self._target is not None:
-            self._return = self._target(*self._args,
-                                                **self._kwargs)
-    def join(self, *args):
-        Thread.join(self, *args)
-        return self._return
