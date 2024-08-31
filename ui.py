@@ -1,5 +1,6 @@
 from threading import Thread
 from tkinter import *
+from tkinter import messagebox
 from constraints import *
 from time import sleep
 
@@ -49,12 +50,20 @@ class Application_menubar(Menu):
         self.file_menu.add_command(label="Exit", command=self.on_exit)
         self.add_cascade(label='File',menu=self.file_menu)
 
+        self.help_menu = Menu(self, tearoff=0)
+        self.help_menu.add_command(label="Help", command=self.on_help)
+        self.add_cascade(label="Help",menu=self.help_menu)
+
     def on_exit(self):
         self.parent.running = False
     
     def on_new(self):
         self.parent.file_handler.close()
         self.parent.file_handler.new_log()
+
+    def on_help(self):
+        messagebox.showinfo("Helo", HELP_MESSAGE)
+
 
 class Ping_frame(Frame):
     def __init__(self, parent):
@@ -96,7 +105,7 @@ class Ping_frame(Frame):
             return
 
         if hosts == None:
-            self.parent.status_label.config(text=STATUS_NO_HOSTS)
+            messagebox.showerror("User Error!", ERROR_NO_HOSTS)
             return
 
         num_packets = int(self.num_packets_entry.get())
