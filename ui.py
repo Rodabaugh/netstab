@@ -1,20 +1,20 @@
 from threading import Thread
 from tkinter import *
-from helper import *
 from constraints import *
 from time import sleep
 
 class App(Tk):
-    def __init__(self, width, height, tester, log_file):
+    def __init__(self, width, height, tester, file_handler):
         super().__init__()
 
         self.tester = tester
-        self.log_file = log_file
+        self.file_handler = file_handler
 
         self.title("NetStab")
         self.geometry(f"{width}x{height}")
         self.running = False
 
+        self.config(menu=Application_menubar(self))
         Ping_frame(self)
         self.status_label = Label(self, text=STATUS_NOT_PINGING_TEXT, font=(UI_FONT, UI_FONT_SIZE))
         self.status_label.pack(padx=UI_X_PADDING, pady=UI_Y_PADDING)
@@ -38,6 +38,23 @@ class App(Tk):
 
     def close(self):
         self.running = False
+
+class Application_menubar(Menu):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+
+        self.file_menu = Menu(self, tearoff=0)
+        self.file_menu.add_command(label="New", command=self.on_new)
+        self.file_menu.add_command(label="Exit", command=self.on_exit)
+        self.add_cascade(label='File',menu=self.file_menu)
+
+    def on_exit(self):
+        self.parent.running = False
+    
+    def on_new(self):
+        self.parent.file_handler.close()
+        self.parent.file_handler.new_log()
 
 class Ping_frame(Frame):
     def __init__(self, parent):
@@ -85,7 +102,7 @@ class Ping_frame(Frame):
         num_packets = int(self.num_packets_entry.get())
 
         self.parent.tester.ping_status = True
-        pinging_thread = Thread(target=self.parent.tester.start_pinging, args=(hosts, num_packets, self.parent.log_file), daemon=True)
+        pinging_thread = Thread(target=self.parent.tester.start_pinging, args=(hosts, num_packets, self.parent.file_handler), daemon=True)
         pinging_thread.start()
         self.parent.redraw()
 

@@ -1,7 +1,7 @@
 import platform
 import subprocess
 import time
-from helper import *
+import concurrent.futures
 
 class Tester():
     def __init__(self):
@@ -13,17 +13,36 @@ class Tester():
         responce = subprocess.run(["ping", self.ping_count_flag, "1", host], stdout = subprocess.PIPE, check=False)
         return responce.stdout.decode("utf-8").lower(), responce.returncode, time_packet_sent
     
-    def start_pinging(self, hosts, num_packets, log_file):
+    def start_pinging(self, hosts, num_packets, file_handler):
         self.ping_status = True
         if num_packets == 0:
             while self.ping_status == True:
-                ping_and_write_log(hosts, 1, self, log_file)
+                self.ping_and_write_log(hosts, 1, file_handler)
         else:
             for i in range(num_packets):
                 if self.ping_status == False:
                     return
-                ping_and_write_log(hosts, 1, self, log_file)
+                self.ping_and_write_log(hosts, 1, file_handler)
             self.ping_status = False
+
+    def run_ping(self,host, number):
+        packets = list()
+        for _ in range(number):
+            ping = self.ping(host)
+            packets.append(self.parse(ping[0], ping[1], ping[2], host).pop())
+            time.sleep(1)
+        return packets
+
+    def ping_and_write_log(self, hosts, number, file_handler):
+        packets = list()
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            results = [executor.submit(self.run_ping, host, number) for host in hosts]
+
+            for f in concurrent.futures.as_completed(results):
+                for packet in f.result():
+                    packets.append(packet)
+        file_handler.write_data(packets)
+        return packets
 
     def parse(self, raw_data, returncode, time_packet_sent, host):
         # system time, ttl, time
