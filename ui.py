@@ -1,15 +1,17 @@
 from threading import Thread
 from tkinter import *
 from tkinter import messagebox
+from tkinter import filedialog
 from constraints import *
 from time import sleep
 
 class App(Tk):
-    def __init__(self, width, height, tester, file_handler):
+    def __init__(self, width, height, tester, file_handler, data_processor):
         super().__init__()
 
         self.tester = tester
         self.file_handler = file_handler
+        self.data_processor = data_processor
 
         self.title("NetStab")
         self.geometry(f"{width}x{height}")
@@ -19,12 +21,26 @@ class App(Tk):
         Ping_frame(self)
         self.status_label = Label(self, text=STATUS_NOT_PINGING_TEXT, font=(UI_FONT, UI_FONT_SIZE))
         self.status_label.pack(padx=UI_X_PADDING, pady=UI_Y_PADDING)
+        Data_frame(self)
 
         self.protocol("WM_DELETE_WINDOW", self.close)
 
     def redraw(self):
         self.update_idletasks()
         self.update()
+
+    def open_file(self):
+        if self.tester.ping_status == True:
+            messagebox.showerror("Ping in Progress", ERROR_PING_IN_PROGRESS)
+        file_to_open = filedialog.askopenfilename(initialdir="",
+                                                  title="Select a File",
+                                                  filetypes=(("csv files", "*.csv"), ("All Files", "*.*")))
+        if file_to_open:
+            self.file_handler.close()
+            try:
+                self.file_handler.open(file_to_open)
+            except Exception as error:
+                messagebox.showerror("File Error", f"Unable to open file:\n{error}")
 
     def wait_for_close(self):
         self.running = True
@@ -47,6 +63,7 @@ class Application_menubar(Menu):
 
         self.file_menu = Menu(self, tearoff=0)
         self.file_menu.add_command(label="New", command=self.on_new)
+        self.file_menu.add_command(label="Open", command=self.on_open)
         self.file_menu.add_command(label="Exit", command=self.on_exit)
         self.add_cascade(label='File',menu=self.file_menu)
 
@@ -60,6 +77,11 @@ class Application_menubar(Menu):
     def on_new(self):
         self.parent.file_handler.close()
         self.parent.file_handler.new_log()
+
+    def on_open(self):
+        self.parent.open_file()
+        self.parent.file_handler.import_data()
+                
 
     def on_help(self):
         messagebox.showinfo("Helo", HELP_MESSAGE)
@@ -132,3 +154,15 @@ class Ping_frame(Frame):
             return None
         else:
             return hosts
+        
+class Data_frame(Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.pack(pady=UI_Y_PADDING)
+
+        self.process_button = Button(self, text="Process!", command=self.process_button_command)
+        self.process_button.grid(row=0, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
+
+    def process_button_command(self):
+        self.parent.data_processor.process()

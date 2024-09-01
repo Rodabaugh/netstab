@@ -13,3 +13,6 @@ STATUS_STOP_PINGING_TEXT = "We're stopping!"
 HELP_MESSAGE = 'At least one is required.\nThe rest can be blank.\n\nIf Number of Packets is 0, it will ping until you click "STOP!"'
 
 ERROR_NO_HOSTS = "No hosts were provided. Please provide a host."
+ERROR_PING_IN_PROGRESS = "A ping is in progress. Please stop the ping, or wait for it to finish."
+
+FILE_HEADING = "Time Sent,Host,Latency,TTL,Dropped\n"
