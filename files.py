@@ -2,7 +2,7 @@ import time
 import datetime
 import calendar
 from ping import packet
-from constraints import *
+from parameters import *
 
 class File_handler():
     def __init__(self, data_procesor):
@@ -20,8 +20,10 @@ class File_handler():
         log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
         self.current_log_file = open(log_name,"w")
         self.current_log_file.write(FILE_HEADING)
+        self.data_procesor.clear()
     
     def close(self):
+        self.data_procesor.clear()
         self.current_log_file.close()
         self.current_log_file = None
         self.log_file_contents = None
@@ -48,6 +50,13 @@ class File_handler():
                 elements = line.split(",")
                 local_time = time.strptime(elements[0], "%Y-%m-%d %H:%M:%S %Z")
                 epoch_time = calendar.timegm(local_time)
-                packets.append(packet(elements[1], elements[2], elements[3], epoch_time, elements[4]))
+
+                if elements[4] == "False":
+                    dropped = False
+                else:
+                    dropped = True
+
+                packets.append(packet(elements[1], elements[2], elements[3], epoch_time, dropped))
+        self.data_procesor.clear()
         self.data_procesor.add_packets(packets)
-        print(self.data_procesor.get_packets())
+        #print(self.data_procesor.get_packets())

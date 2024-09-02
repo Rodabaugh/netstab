@@ -2,7 +2,7 @@ from threading import Thread
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
-from constraints import *
+from parameters import *
 from time import sleep
 
 class App(Tk):
