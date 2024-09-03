@@ -14,6 +14,7 @@ class App(Tk):
         self.data_processor = data_processor
 
         self.title("NetStab")
+        self.iconbitmap = ICON_PATH
         self.geometry(f"{width}x{height}")
         self.running = False
 
@@ -32,7 +33,7 @@ class App(Tk):
     def open_file(self):
         if self.tester.ping_status == True:
             messagebox.showerror("Ping in Progress", ERROR_PING_IN_PROGRESS)
-        file_to_open = filedialog.askopenfilename(initialdir="",
+        file_to_open = filedialog.askopenfilename(initialdir=DEFAULT_LOG_DIR,
                                                   title="Select a File",
                                                   filetypes=(("csv files", "*.csv"), ("All Files", "*.*")))
         if file_to_open:

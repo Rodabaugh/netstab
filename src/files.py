@@ -17,7 +17,7 @@ class File_handler():
             self.current_log_file.writelines(f"{local_time},{packet.host},{packet.latency},{packet.ttl},{packet.dropped}\n")
 
     def new_log(self):
-        log_name = "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
+        log_name = DEFAULT_LOG_DIR + "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
         self.current_log_file = open(log_name,"w")
         self.current_log_file.write(FILE_HEADING)
         self.data_procesor.clear()

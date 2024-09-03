@@ -1,3 +1,2 @@
-Add error messages and raise expections where reasonable
-Icon?
-Restructure file system
+Improve error messages and add raise expections where reasonable
+Windows program launcher

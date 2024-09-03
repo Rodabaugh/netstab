@@ -10,6 +10,9 @@ UI_REPORT_HEIGHT = 40
 DEFAULT_HOST = "1.1.1.1"
 DEFAULT_NUM_PACKETS = "4"
 
+DEFAULT_LOG_DIR = "./logs/"
+ICON_PATH = "./images/netstab-icon.ico"
+
 STATUS_PINGING_TEXT = "We're pinging!"
 STATUS_NOT_PINGING_TEXT = "We're not pinging..."
 STATUS_STOP_PINGING_TEXT = "We're stopping!"
