@@ -4,15 +4,15 @@ import time
 import concurrent.futures
 
 class Tester():
-    def __init__(self, data_procesor):
+    def __init__(self, data_processor):
         self.ping_count_flag = "-n" if platform.system().lower()=='windows' else "-c"
-        self.data_procesor = data_procesor
+        self.data_processor = data_processor
         self.ping_status = False
 
     def ping(self, host, packets = 1):
         time_packet_sent = time.time()
-        responce = subprocess.run(["ping", self.ping_count_flag, "1", host], stdout = subprocess.PIPE, check=False)
-        return responce.stdout.decode("utf-8").lower(), responce.returncode, time_packet_sent
+        response = subprocess.run(["ping", self.ping_count_flag, "1", host], stdout = subprocess.PIPE, check=False)
+        return response.stdout.decode("utf-8").lower(), response.returncode, time_packet_sent
     
     def start_pinging(self, hosts, num_packets, file_handler):
         self.ping_status = True
@@ -43,7 +43,7 @@ class Tester():
                 for packet in f.result():
                     packets.append(packet)
         file_handler.write_data(packets)
-        self.data_procesor.add_packets(packets)
+        self.data_processor.add_packets(packets)
         return packets
 
     def parse(self, raw_data, returncode, time_packet_sent, host):
