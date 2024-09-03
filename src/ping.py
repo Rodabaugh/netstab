@@ -80,6 +80,7 @@ class Tester():
                 for section in sections:
                     if "time=" in section:
                         latency = section.strip("time=")
+                        latency = latency.strip("ms")
                     if "ttl" in section:
                         ttl = section.strip("ttl=")
                 if ttl == None:

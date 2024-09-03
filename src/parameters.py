@@ -1,7 +1,9 @@
+import os.path
+
 UI_WIDTH=800
 UI_HEIGHT=1000
 UI_FONT_SIZE = 18
-UI_FONT = "Georgia"
+UI_FONT = "Arial"
 UI_Y_PADDING = 3
 UI_X_PADDING = 3
 UI_REPORT_WIDTH = 80
@@ -10,8 +12,8 @@ UI_REPORT_HEIGHT = 40
 DEFAULT_HOST = "1.1.1.1"
 DEFAULT_NUM_PACKETS = "4"
 
-DEFAULT_LOG_DIR = "./logs/"
-ICON_PATH = "./images/netstab-icon.ico"
+DEFAULT_LOG_DIR = os.path.join(".", "logs")
+ICON_PATH = os.path.join(".", "images",  "netstab-icon.ico")
 
 STATUS_PINGING_TEXT = "We're pinging!"
 STATUS_NOT_PINGING_TEXT = "We're not pinging..."
