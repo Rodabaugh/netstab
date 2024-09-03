@@ -36,11 +36,13 @@ class App(Tk):
                                                   title="Select a File",
                                                   filetypes=(("csv files", "*.csv"), ("All Files", "*.*")))
         if file_to_open:
-            self.file_handler.close()
+            if self.file_handler.current_log_file != None:
+                self.file_handler.close()
             try:
                 self.file_handler.open(file_to_open)
             except Exception as error:
                 messagebox.showerror("File Error", f"Unable to open file:\n{error}")
+                raise Exception("Unable to open the file provided.")
 
     def wait_for_close(self):
         self.running = True
@@ -79,7 +81,10 @@ class Application_menubar(Menu):
         self.parent.file_handler.new_log()
 
     def on_open(self):
-        self.parent.open_file()
+        try:
+            self.parent.open_file()
+        except:
+            return
         self.parent.file_handler.import_data()
                 
 
@@ -98,7 +103,7 @@ class Ping_frame(Frame):
         self.host1_label.grid(row=0, column=0, padx=UI_X_PADDING)
         self.host1_entry = Entry(self, width=20, font=(UI_FONT, UI_FONT_SIZE))
         self.host1_entry.insert(0, DEFAULT_HOST)
-        self.host1_entry.grid(row=0, column=1, padx=UI_X_PADDING)
+        self.host1_entry.grid(row=0, column=1, padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
         self.host2_label = Label(self, text="Remote host:", font=(UI_FONT, UI_FONT_SIZE))
         self.host2_label.grid(row=1, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
@@ -124,6 +129,10 @@ class Ping_frame(Frame):
     def ping_button_command(self):
         hosts = self.get_hosts()
         if self.parent.tester.ping_status == True:
+            return
+        
+        if self.parent.file_handler.current_log_file == None:
+            messagebox.showerror("No File Open!", ERROR_NO_LOG_FILE)
             return
 
         if hosts == None:
@@ -164,5 +173,21 @@ class Data_frame(Frame):
         self.process_button = Button(self, text="Process!", command=self.process_button_command)
         self.process_button.grid(row=0, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
 
+        self.results_box = Text(self, width=UI_REPORT_WIDTH, height=UI_REPORT_HEIGHT, state='disabled')
+        self.set_report_text(REPORT_HEADING + REPORT_SEPARATOR + REPORT_NOT_PROCESSED)
+        self.results_box.grid(row=1, column=0, padx=UI_X_PADDING, pady=UI_Y_PADDING)
+
     def process_button_command(self):
-        self.parent.data_processor.process()
+        self.set_report_text(REPORT_WORKING)
+        report = self.parent.data_processor.process()
+        if report:
+            self.set_report_text(REPORT_HEADING + REPORT_SEPARATOR + report)
+        else:
+            messagebox.showerror(REPORT_ERROR)
+            self.set_report_text(REPORT_NOT_PROCESSED)
+
+    def set_report_text(self, text):
+        self.results_box.config(state="normal")
+        self.results_box.delete("1.0", END)
+        self.results_box.insert("1.0", text)
+        self.results_box.config(state="disabled")
