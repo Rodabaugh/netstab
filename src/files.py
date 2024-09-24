@@ -12,9 +12,8 @@ class File_handler():
 
     def write_data(self, packets):
         for packet in packets:
-            local_time = datetime.datetime.fromtimestamp(packet.time_packet_sent).strftime('%Y-%m-%d %H:%M:%S')
-            local_time += " " + str(datetime.datetime.now(datetime.timezone(datetime.timedelta(0))).astimezone().tzinfo)
-            self.current_log_file.writelines(f"{local_time},{packet.host},{packet.latency},{packet.ttl},{packet.dropped}\n")
+            gm_time = time.strftime('%Y-%m-%d %H-%M-%S', time.gmtime(packet.time_packet_sent))
+            self.current_log_file.writelines(f"{gm_time},{packet.host},{packet.latency},{packet.ttl},{packet.dropped}\n")
 
     def new_log(self):
         log_name = DEFAULT_LOG_DIR + "NetStab " + datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H-%M-%S') + ".csv"
@@ -48,8 +47,7 @@ class File_handler():
         for line in self.raw_data:
             if line+"\n" != FILE_HEADING and line != "":
                 elements = line.split(",")
-                local_time = time.strptime(elements[0], "%Y-%m-%d %H:%M:%S %Z")
-                epoch_time = calendar.timegm(local_time)
+                epoch_time = calendar.timegm(time.strptime(elements[0], '%Y-%m-%d %H-%M-%S'))
 
                 if elements[4] == "False":
                     dropped = False

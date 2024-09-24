@@ -37,7 +37,7 @@ class Data_processor():
         for host in highest_drop_counts:
             report += str(host) + " - " + str(highest_drop_counts[host]) + " dropped in a row\n"
 
-        report += REPORT_HIGHEST_SEQUENTIAL_DROPPED
+        report += REPORT_HIGHEST_SEQUENTIAL_NOT_DROPPED
         for host in highest_not_dropped_counts:
             report += str(host) + " - " + str(highest_not_dropped_counts[host]) + " in a row were not dropped\n"
 

@@ -19,7 +19,7 @@ STATUS_PINGING_TEXT = "We're pinging!"
 STATUS_NOT_PINGING_TEXT = "We're not pinging..."
 STATUS_STOP_PINGING_TEXT = "We're stopping!"
 
-HELP_MESSAGE = 'At least one is required.\nThe rest can be blank.\n\nIf Number of Packets is 0, it will ping until you click "STOP!"'
+HELP_MESSAGE = 'At least one host is required.\nThe rest can be blank.\n\nThe CSV log stores the time in GM time, but the filename will be in your timezone.Please account for this when reading logs.\n\nIf Number of Packets is 0, it will ping until you click "STOP!"'
 
 ERROR_NO_HOSTS = "No hosts were provided. Please provide a host."
 ERROR_PING_IN_PROGRESS = "A ping is in progress. Please stop the ping, or wait for it to finish."
@@ -34,6 +34,7 @@ REPORT_AVERAGE_HEADING = "\nAverage Latency" + REPORT_SEPARATOR
 REPORT_HIGHEST_LATENCY = "\nHighest Latency" + REPORT_SEPARATOR
 REPORT_DROPPED_HEADING = "\nDropped Packets" + REPORT_SEPARATOR
 REPORT_HIGHEST_SEQUENTIAL_DROPPED = "\nHighest Sequential Dropped" + REPORT_SEPARATOR
+REPORT_HIGHEST_SEQUENTIAL_NOT_DROPPED = "\nHighest Sequential Not Dropped" + REPORT_SEPARATOR
 REPORT_NOT_PROCESSED = 'No data has been processed yet. Click "Process!" to generate a report.'
 REPORT_WORKING = "Processing... Please wait for the report to be created."
 REPORT_ERROR = "We failed to create the report. If you know your data to be good, please open a GitHub issue and include your NetStab log file."
