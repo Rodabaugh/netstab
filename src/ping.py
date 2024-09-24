@@ -86,7 +86,7 @@ class Tester():
                 if ttl == None:
                     packets.append(packet(host, dropped = True))
                 else:
-                    packets.append(packet(host, latency, ttl, time_packet_sent))
+                    packets.append(packet(host, int(latency), int(ttl), time_packet_sent))
             return packets
 
 class packet():
